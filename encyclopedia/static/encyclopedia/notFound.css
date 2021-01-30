@@ -1,0 +1,19 @@
+.notFound {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+h1 {
+  font-size: 60px;
+  flex: 100%;
+  font-family: sans-serif;
+}
+
+a {
+  flex: 100%;
+  font-family: sans-serif;
+  text-decoration: none;
+}
