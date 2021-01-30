@@ -7,10 +7,6 @@ from . import util
 
 import markdown2
 
-# class SearchForm(forms.Form):
-#     searchText = forms.CharField(label="Search")
-
-
 def index(request):
     return render(request, "encyclopedia/index.html", {
         "entries": util.list_entries()
