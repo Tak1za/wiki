@@ -28,12 +28,15 @@ def search(request):
     if request.method == "POST":
         form_data = request.POST.dict()
         searchText = form_data.get("q")
+        searchText = searchText.lower()
         entries = util.list_entries()
-        if searchText in entries:
+        lowercase_entries = [item.lower() for item in entries]
+        
+        if searchText in lowercase_entries:
             return HttpResponseRedirect(reverse("wiki", args=(searchText,)))
         else:
             validSearchEntries = []
-            for entry in entries:
+            for entry in lowercase_entries:
                 if searchText in entry:
                     validSearchEntries.append(entry)
 
