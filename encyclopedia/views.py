@@ -47,3 +47,18 @@ def search(request):
     return render(request, "encyclopedia/search.html", {
         "entries": []
     })
+
+class AddNewForm(forms.Form):
+    title = forms.CharField(label="Title")
+    content = forms.CharField(widget=forms.Textarea, label="Content")
+
+def add(request):
+    if request.method == "POST":
+        title = request.POST["title"]
+        content = request.POST["content"]
+        util.save_entry(title, content)
+        return HttpResponseRedirect(reverse("wiki", args=(title,)))
+
+    return render(request, "encyclopedia/add.html", {
+        "form": AddNewForm()
+    })
