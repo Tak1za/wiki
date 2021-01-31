@@ -49,7 +49,7 @@ def search(request):
         "entries": []
     })
 
-class AddNewForm(forms.Form):
+class EntryForm(forms.Form):
     title = forms.CharField(label="Title")
     content = forms.CharField(widget=forms.Textarea, label="Content")
 
@@ -62,16 +62,37 @@ def add(request):
         if title.lower() in existing_lowercase_entries:
             return render(request, "encyclopedia/add.html", {
                 "error": "Already existing entry " + title,
-                "form": AddNewForm()
+                "form": EntryForm()
             })
         util.save_entry(title, content)
         return HttpResponseRedirect(reverse("wiki", args=(title,)))
 
     return render(request, "encyclopedia/add.html", {
-        "form": AddNewForm()
+        "form": EntryForm()
     })
 
 def random(request):
     entries = util.list_entries()
     random_choice = rand.choice(entries)
     return HttpResponseRedirect(reverse("wiki", args=(random_choice,)))
+
+def edit(request, title):
+    if request.method == "POST":
+        updated_content = request.POST["content"]
+        util.save_entry(title, updated_content)
+        return HttpResponseRedirect(reverse("wiki", args=(title,)))
+
+    markdown_data = util.get_entry(title)
+    if markdown_data == None:
+        return render(request, "encyclopedia/notfound.html")
+
+    initial_dict = {
+        "title": title,
+        "content": markdown_data
+    }
+    
+    form_data = EntryForm(initial=initial_dict)
+    return render(request, "encyclopedia/edit.html", {
+        "form": form_data,
+        "title": title
+    })
