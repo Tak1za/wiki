@@ -6,6 +6,7 @@ from django.urls import reverse
 from . import util
 
 import markdown2
+import random as rand
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
@@ -56,9 +57,21 @@ def add(request):
     if request.method == "POST":
         title = request.POST["title"]
         content = request.POST["content"]
+        existing_entries = util.list_entries()
+        existing_lowercase_entries = [item.lower() for item in existing_entries]
+        if title.lower() in existing_lowercase_entries:
+            return render(request, "encyclopedia/add.html", {
+                "error": "Already existing entry " + title,
+                "form": AddNewForm()
+            })
         util.save_entry(title, content)
         return HttpResponseRedirect(reverse("wiki", args=(title,)))
 
     return render(request, "encyclopedia/add.html", {
         "form": AddNewForm()
     })
+
+def random(request):
+    entries = util.list_entries()
+    random_choice = rand.choice(entries)
+    return HttpResponseRedirect(reverse("wiki", args=(random_choice,)))
