@@ -17,7 +17,10 @@ def index(request):
 def wiki(request, title):
     markdown_data = util.get_entry(title)
     if markdown_data == None:
-        return render(request, "encyclopedia/notfound.html")
+        return render(request, "encyclopedia/wiki.html", {
+            "title": title,
+            "error": "Requested entry does not exist. Try creating a new one"
+        })
     html_data = markdown2.markdown(markdown_data)
     return render(request, "encyclopedia/wiki.html", {
         "content": html_data,
@@ -37,8 +40,8 @@ def search(request):
             return HttpResponseRedirect(reverse("wiki", args=(searchText,)))
         else:
             validSearchEntries = []
-            for entry in lowercase_entries:
-                if searchText in entry:
+            for entry in entries:
+                if searchText in entry.lower():
                     validSearchEntries.append(entry)
 
             return render(request, "encyclopedia/search.html", {

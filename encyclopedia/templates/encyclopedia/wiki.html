@@ -5,6 +5,10 @@
 {% endblock %}
 
 {% block body %}
+    {% if error %}
+    <p>{{error}}</p>
+    {% else %}
     <a href="{% url 'edit' title %}">Edit Page</a>
     {{ content | safe }}
+    {% endif %}
 {% endblock %}
